@@ -1,0 +1,30 @@
+
+.UploadedJSONcontainer {
+    width: 40%;
+    max-width: 800px; /* Set the maximum width for each container */
+    margin: 0 auto;   /* Center the container horizontally */
+    padding: 20px;    /* Add padding for spacing inside the container */
+    float: left;
+}
+
+/* Style the container */
+.TransferButton {
+
+    top: 50%;
+    text-align: center; /* Center the content horizontally */
+    margin-top: 50px; /* Adjust as needed for vertical positioning */
+    float: left;
+    transform: translateY(-50%);
+}
+
+/* Style the transfer image on the left */
+.transfer_image {
+    width: 50px; /* Adjust the size of the image */
+    margin-right: 20px; /* Add space between the image and the button */
+}
+
+/* Style the button */
+#mapDataButton {
+    font-size: 14px; /* Adjust the font size */
+    padding: 10px 15px; /* Adjust the padding for the button */
+}

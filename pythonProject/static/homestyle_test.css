@@ -1,0 +1,23 @@
+body {
+  background-color: #f2f2f2; /* Set your desired color using a color code or name */
+}
+
+/* Style for the file input */
+input[type="file"]::-webkit-file-upload-button {
+  border: none;
+  border-radius: 10px; /* Adjust the border-radius to control the roundness */
+  padding: 10px; /* Add padding for better aesthetics */
+  background-color: #007bff; /* Change the background color to your desired color */
+  color: #fff; /* Set the text color to contrast with the background */
+  cursor: pointer; /* Change the cursor on hover */
+}
+
+/* Style for the submit input */
+input[type="submit"] {
+  border: none;
+  border-radius: 10px; /* Adjust the border-radius to control the roundness */
+  padding: 10px; /* Add padding for better aesthetics */
+  background-color: #28a745; /* Change the background color to your desired color */
+  color: #fff; /* Set the text color to contrast with the background */
+  cursor: pointer; /* Change the cursor on hover */
+}

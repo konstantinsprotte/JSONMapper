@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex">
+  <title>Bootstrap Table - Flask example </title>
+  <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css">+
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_tables.css') }}">
+  <style type='text/css'>
+    .row-index {
+      width: 50px;
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="UploadedJSONcontainer" style="padding: 10px; ">
+    <div class="header-container text-center mb-5">
+      <h1><strong>Mappable Table</strong></h1>
+    </div>
+    <br/>
+    <div id="toolbar">
+      <button id="FilterSelectedButton" class="toggle-btn">Show Only Selected</button>
+    </div>
+    <table
+      id="table"
+
+      data-toggle="true"
+      data-height="500"
+      data-pagination="true"
+      data-toolbar="#toolbar"
+      data-search="true"
+      data-show-columns="true"
+      data-maintain-selected="true"
+      data-maintain-meta-data="true"
+      data-click-to-select="true">
+    </table>
+  </div>
+  <div class="TransferButton" style="padding: 10px; ">
+
+    <button id="mapDataButton" class="btn btn-primary" onclick="mapData()">
+      <img src="{{ url_for('static', filename='upload_image.png') }}" alt="Transfer Arrows" class="transfer_image">
+      <strong>Map Data</strong>
+    </button>
+  </div>
+  <script
+    src="https://code.jquery.com/jquery-2.2.4.min.js"
+    integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+    crossorigin="anonymous"></script>
+  <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script type='text/javascript' src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
+<script type='text/javascript'>
+    function formatTitle(title) {
+      return title.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
+        return char.toUpperCase();
+      });
+    }
+
+    $(document).ready(function() {
+      var data = {{data|safe}};
+
+      if (data.length > 0) {
+        var keys = Object.keys(data[0]);
+
+        var columns = [
+          {
+            field: 'checkbox',
+            checkbox: true,
+          },
+          ...keys.map(function(key) {
+            return { field: key, title: formatTitle(key) };
+          })
+        ];
+
+        $('#table').bootstrapTable({
+          data: data,
+          columns: columns,
+        });
+      }
+
+      var $button = $('#FilterSelectedButton');
+      var $table = $('#table');
+      var filterActive = false;
+
+      $button.click(function() {
+        filterActive = !filterActive;
+
+        if (filterActive) {
+          var selectedRows = $table.bootstrapTable('getSelections');
+          var selectedIds = selectedRows.map(row => row.id);
+          var NotSelectedIds = $table.bootstrapTable('getData').map(row => row.id).filter(id => !selectedIds.includes(id));
+          // alert(JSON.stringify(selectedIds));
+          var temp = [0];
+
+          if (selectedIds.length > 0) {
+            $table.bootstrapTable('filterBy', {
+            id: selectedIds
+            });
+          }
+        } else {
+            $table.bootstrapTable('filterBy', {});
+        }
+      });
+    });
+</script>
+
+
+</body>
+</html>
