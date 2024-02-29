@@ -1,30 +1,63 @@
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: row; /* Horizontal flex container */
+    }
 
-.UploadedJSONcontainer {
-    width: 40%;
-    max-width: 800px; /* Set the maximum width for each container */
-    margin: 0 auto;   /* Center the container horizontally */
-    padding: 20px;    /* Add padding for spacing inside the container */
-    float: left;
-}
+    .UploadedJSONcontainer {
+      width: 40%;
+      max-width: 800px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
 
-/* Style the container */
-.TransferButton {
+    .TransferButton {
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center items horizontally */
+      justify-content: center; /* Center items vertically */
+      width: 60%; /* Adjust the width for the TransferButton */
+      padding: 20px;
+      box-sizing: border-box;
+      margin: auto; /* Center the TransferButton in the available space */
+    }
 
-    top: 50%;
-    text-align: center; /* Center the content horizontally */
-    margin-top: 50px; /* Adjust as needed for vertical positioning */
-    float: left;
-    transform: translateY(-50%);
-}
+    .transfer_image {
+      width: 50px;
+      margin-bottom: 10px; /* Adjust the spacing between image and button */
+    }
 
-/* Style the transfer image on the left */
-.transfer_image {
-    width: 50px; /* Adjust the size of the image */
-    margin-right: 20px; /* Add space between the image and the button */
-}
+    .transfer_image {
+      width: 50px;
 
-/* Style the button */
-#mapDataButton {
-    font-size: 14px; /* Adjust the font size */
-    padding: 10px 15px; /* Adjust the padding for the button */
-}
+      margin-bottom: 10px; /* Adjust the spacing between image and button */
+    }
+
+    #mapDataButton,
+    #undoMapDataButton {
+      padding: 10px 15px;
+      margin-bottom: 10px; /* Adjust the spacing between buttons */
+      width: 150px;
+      border: none;
+      font-weight: bold; /* Make the text bold */
+      font-family: 'Arial'; /* Specify the font */
+      color: #000000;
+    }
+
+    #mapDataButton span,
+    #undoMapDataButton span {
+      display: block;
+    }
+
+
+    #undoMapDataButton .rotated {
+    transform: rotate(180deg); /* Rotate the image by 180 degrees */
+    }
+    #mapDataButton {
+    background-color: #8ec276; /* Set background color for mapDataButton */
+    }
+
+    #undoMapDataButton {
+        background-color: #e63953; /* Set background color for undoMapDataButton */
+    }
