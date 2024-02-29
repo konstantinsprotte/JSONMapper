@@ -25,7 +25,7 @@
       <button id="FilterSelectedButton" class="toggle-btn">Show Only Selected</button>
     </div>
     <table
-      id="table"
+      id="UploadedTable"
 
       data-toggle="true"
       data-height="500"
@@ -38,11 +38,15 @@
       data-click-to-select="true">
     </table>
   </div>
-  <div class="TransferButton" style="padding: 10px; ">
+  <div class="TransferButton" style="padding: 10px;">
 
-    <button id="mapDataButton" class="btn btn-primary" onclick="mapData()">
-      <img src="{{ url_for('static', filename='upload_image.png') }}" alt="Transfer Arrows" class="transfer_image">
-      <strong>Map Data</strong>
+    <button id="mapDataButton" class="btn btn-primary">
+      <img src="{{ url_for('static', filename='curvedarrow.png') }}" alt="Transfer Arrows" class="transfer_image">
+      <span>Map Data</span>
+    </button>
+    <button id="undoMapDataButton" class="btn btn-primary">
+        <img src="{{ url_for('static', filename='curvedarrow.png') }}" alt="Rotated Arrows" class="transfer_image rotated">
+      <span>Undo</span>
     </button>
   </div>
   <script
@@ -52,7 +56,7 @@
   <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
   <script type='text/javascript' src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
 <script type='text/javascript'>
-    <! –– formatiTitle creates the title names for the columns from the key entries ––>
+
     function formatTitle(title) {
       return title.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
         return char.toUpperCase();
@@ -62,7 +66,7 @@
     $(document).ready(function() {
       var data = {{data|safe}};
 
-    <! –– make sure there is data, first column is the checkbox column, next columns are taken from keys  ––>
+
       if (data.length > 0) {
         var keys = Object.keys(data[0]);
 
@@ -71,40 +75,88 @@
             field: 'checkbox',
             checkbox: true,
           },
+
           ...keys.map(function(key) {
             return { field: key, title: formatTitle(key) };
           })
         ];
 
-        $('#table').bootstrapTable({
+        columns.forEach(function(column) {
+          if (column.field === 'group_key' || column.field === 'block_key') {
+            column.visible = false;
+          }
+        });
+
+
+         console.log('Dynamically Generated Field Names:', keys);
+
+        $('#UploadedTable').bootstrapTable({
           data: data,
           columns: columns,
+          uniqueId: 'id',
         });
       }
 
-      var $button = $('#FilterSelectedButton');
-      var $table = $('#table');
+
+
+
+      var $FilterSelectedButton = $('#FilterSelectedButton');
+      var $UploadedTable = $('#UploadedTable');
       var filterActive = false;
 
-      $button.click(function() {
+
+      $FilterSelectedButton.click(function() {
         filterActive = !filterActive;
 
         if (filterActive) {
-          var selectedRows = $table.bootstrapTable('getSelections');
+          var selectedRows = $UploadedTable.bootstrapTable('getSelections');
           var selectedIds = selectedRows.map(row => row.id);
-          var NotSelectedIds = $table.bootstrapTable('getData').map(row => row.id).filter(id => !selectedIds.includes(id));
+          var NotSelectedIds = $UploadedTable.bootstrapTable('getData').map(row => row.id).filter(id => !selectedIds.includes(id));
           // alert(JSON.stringify(selectedIds));
           var temp = [0];
 
           if (selectedIds.length > 0) {
-            $table.bootstrapTable('filterBy', {
+            $UploadedTable.bootstrapTable('filterBy', {
             id: selectedIds
             });
           }
         } else {
-            $table.bootstrapTable('filterBy', {});
+            $UploadedTable.bootstrapTable('filterBy', {});
         }
       });
+
+      var MappedDataRows = [];
+
+      $('#mapDataButton').click(function () {
+        var selectedRows = $UploadedTable.bootstrapTable('getSelections');
+        var selectedIds = selectedRows.map(row => row.id);
+        var UpdatedValue = 'Updated Value';
+        for (var i = 0; i < selectedIds.length; i++) {
+          $UploadedTable.bootstrapTable('updateCellByUniqueId', {
+            id: selectedIds[i],
+            field: 'target_val',
+            value: UpdatedValue,
+            reinit: false
+          });
+          var updatedRow = $UploadedTable.bootstrapTable('getRowByUniqueId', selectedIds[i]);
+          MappedDataRows.push(updatedRow);
+        }
+      });
+
+      $('#undoMapDataButton').click(function () {
+        var selectedRows = $UploadedTable.bootstrapTable('getSelections');
+        var selectedIds = selectedRows.map(row => row.id);
+        for (var i = 0; i < selectedIds.length; i++) {
+          $UploadedTable.bootstrapTable('updateCellByUniqueId', {
+            id: selectedIds[i],
+            field: 'target_val',
+            value: '',
+            reinit: false
+          });
+        }
+      });
+
+
     });
 </script>
 
