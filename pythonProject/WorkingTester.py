@@ -30,7 +30,7 @@ def JSON_data_reader(uploaded_data):
     #within each flattened entry of my create array, create a key : value_entry
     for group_key, group_value in uploaded_data.items():
         for block_key, block_value in group_value.items():
-            if not isinstance(block_value, dict):
+            if not isinstance(block_value, dict):#if our block key is a dict then we continue, otherwise it ends here
                 continue
             for item_key, item_value in block_value.items():
                 entry = {"id": temp_ID_index, "initial_group_key": initial_group_key} #creating an ID for each entry
