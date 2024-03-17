@@ -45,10 +45,17 @@
       <img src="{{ url_for('static', filename='curvedarrow.png') }}" alt="" class="transfer_image">
       <span>Map Data</span>
     </button>
+      <br/>
     <!-- undo button -->
     <button id="undoMapDataButton" class="btn btn-primary">
         <img src="{{ url_for('static', filename='curvedarrow.png') }}" alt="" class="transfer_image rotated">
       <span>Undo</span>
+    </button>
+      <br/>
+    <!-- print button -->
+    <button id="exportButton" class="btn btn-primary">
+      <img src="{{ url_for('static', filename='print.png') }}" alt="" class="transfer_image">
+      <span>Export</span>
     </button>
   </div>
 
@@ -75,6 +82,9 @@
         data-click-to-select="true">
         </table>
     </div>
+</div>
+<div class="footer">
+    <p>Erstellt von: Anton Burckhardt und Konstantin Sprotte</p>
 </div>
 
 <!-- JAVASCRIPT PART -->
@@ -116,8 +126,7 @@
                 uniqueId: 'id',
             });
       }
-
-    }
+     }
 
     $(document).ready(function() {
 
@@ -155,23 +164,30 @@
 
       var MappedDataRows = [];
 
-      $('#mapDataButton').click(function () {
-        var selectedRows = $UploadedTable.bootstrapTable('getSelections');
-        var selectedIds = selectedRows.map(row => row.id);
+    $('#mapDataButton').click(function () {
+    var selectedRowsLeft = $UploadedTable.bootstrapTable('getSelections');
+    var selectedIdsLeft = selectedRowsLeft.map(row => row.id);
 
-        for (var i = 0; i < selectedIds.length; i++) {
-            var row = $UploadedTable.bootstrapTable('getRowByUniqueId', selectedIds[i]);
-            var UpdatedValue = row.target_val;
-          $UploadedTable.bootstrapTable('updateCellByUniqueId', {
-            id: selectedIds[i],
-            field: 'target_val',
-            value: UpdatedValue,
-            reinit: false
-          });
-          var updatedRow = $UploadedTable.bootstrapTable('getRowByUniqueId', selectedIds[i]);
-          MappedDataRows.push(updatedRow);
+    var selectedRowsRight = $('#LoincTable').bootstrapTable('getSelections');
+    var selectedIdRight = selectedRowsRight[0].id; // Get the first selected row from the right table
+
+    var rowRight = $('#LoincTable').bootstrapTable('getRowByUniqueId', selectedIdRight);
+
+    if (rowRight) {
+        var UpdatedValue = rowRight.concept_id;
+
+        for (var i = 0; i < selectedIdsLeft.length; i++) {
+            $UploadedTable.bootstrapTable('updateCellByUniqueId', {
+                id: selectedIdsLeft[i],
+                field: 'target_val',
+                value: UpdatedValue,
+                reinit: false
+            });
+            var updatedRow = $UploadedTable.bootstrapTable('getRowByUniqueId', selectedIdsLeft[i]);
+            MappedDataRows.push(updatedRow);
         }
-      });
+    }
+});
 
       $('#undoMapDataButton').click(function () {
         var selectedRows = $UploadedTable.bootstrapTable('getSelections');
@@ -185,6 +201,35 @@
           });
         }
       });
+
+      $('#exportButton').click(function () {
+    var data = $UploadedTable.bootstrapTable('getData');
+    var transformedData = data.reduce((acc, item) => {
+            acc["saficucdslaborcatalog"]["CODE"][item.source_val] = {
+                "source_val": item.source_val,
+                "target_val": item.target_val,
+                "description": {
+                    "cnt": item.cnt,
+                    "bezeichnung": item.bezeichnung,
+                    "gruppe_bezeichnung": item.gruppe_bezeichnung,
+                    "material": item.material,
+                    "uka_loinc": item.uka_loinc,
+                    "uka_concept_id": item.uka_concept_id,
+                    "einheit": item.einheit
+                }
+            };
+            return acc;
+        }, {"saficucdslaborcatalog": {"CODE": {}}});
+    var json = JSON.stringify(transformedData);
+    var blob = new Blob([json], {type: 'application/json'});
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'export.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
 
 
     });
