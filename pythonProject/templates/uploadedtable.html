@@ -4,29 +4,28 @@
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="robots" content="noindex">
   <title>Bootstrap Table - Flask example </title>
-  <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css">+
+
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_tables.css') }}">
-  <style type='text/css'>
-    .row-index {
-      width: 50px;
-      display: inline-block;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css">
+
 </head>
 
 <body>
-  <div class="UploadedJSONcontainer" style="padding: 10px; ">
+<!-- grid container -->
+<div class="GridContainer">
+    <!-- input table -->
+  <div class="UploadedJSONcontainer" style="padding: 10px">
     <div class="header-container text-center mb-5">
       <h1><strong>Mappable Table</strong></h1>
     </div>
     <br/>
-    <div id="toolbar">
-      <button id="FilterSelectedButton" class="toggle-btn">Show Only Selected</button>
+    <div id="toolbar_input">
+      <button id="FilterSelectedButton_input" class="toggle-btn">Show Only Selected</button>
     </div>
     <table
       id="UploadedTable"
-
+      style="table-layout: auto;"
       data-toggle="true"
       data-height="500"
       data-pagination="true"
@@ -38,17 +37,47 @@
       data-click-to-select="true">
     </table>
   </div>
-  <div class="TransferButton" style="padding: 10px;">
 
+<!-- Buttons -->
+  <div class="TransferButton" style="">
+    <!-- map button -->
     <button id="mapDataButton" class="btn btn-primary">
-      <img src="{{ url_for('static', filename='curvedarrow.png') }}" alt="Transfer Arrows" class="transfer_image">
+      <img src="{{ url_for('static', filename='curvedarrow.png') }}" alt="" class="transfer_image">
       <span>Map Data</span>
     </button>
+    <!-- undo button -->
     <button id="undoMapDataButton" class="btn btn-primary">
-        <img src="{{ url_for('static', filename='curvedarrow.png') }}" alt="Rotated Arrows" class="transfer_image rotated">
+        <img src="{{ url_for('static', filename='curvedarrow.png') }}" alt="" class="transfer_image rotated">
       <span>Undo</span>
     </button>
   </div>
+
+<!-- loinc table -->
+    <div class="LoincJSONcontainer" style="padding: 10px; width: 100%">
+        <div class="header-container text-center mb-5">
+        <h1><strong>LOINC Table</strong></h1>
+        </div>
+        <br/>
+        <div id="toolbar_loinc">
+        <button id="FilterSelectedButton_loinc" class="toggle-btn">Show Only Selected</button>
+        </div>
+        <table
+        id="LoincTable"
+        style="table-layout: auto; width: 100%;"
+        data-toggle="true"
+        data-height="500"
+        data-pagination="true"
+        data-toolbar="#toolbar"
+        data-search="true"
+        data-show-columns="true"
+        data-maintain-selected="true"
+        data-maintain-meta-data="true"
+        data-click-to-select="true">
+        </table>
+    </div>
+</div>
+
+<!-- JAVASCRIPT PART -->
   <script
     src="https://code.jquery.com/jquery-2.2.4.min.js"
     integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
@@ -62,43 +91,42 @@
         return char.toUpperCase();
       });
     }
-
-    $(document).ready(function() {
-      var data = {{data|safe}};
-
-
+    <!-- create table -->
+     function prepareTable(data, tableId) {
       if (data.length > 0) {
         var keys = Object.keys(data[0]);
-
         var columns = [
-          {
-            field: 'checkbox',
-            checkbox: true,
-          },
-
-          ...keys.map(function(key) {
-            return { field: key, title: formatTitle(key) };
-          })
-        ];
-
-        columns.forEach(function(column) {
-          if (column.field === 'group_key' || column.field === 'block_key') {
-            column.visible = false;
-          }
-        });
-
-
-         console.log('Dynamically Generated Field Names:', keys);
-
-        $('#UploadedTable').bootstrapTable({
-          data: data,
-          columns: columns,
-          uniqueId: 'id',
-        });
+                {
+                    field: 'checkbox',
+                    checkbox: true,
+                },
+                ...keys.map(function(key) {
+                    return { field: key, title: formatTitle(key) };
+                })
+            ];
+            columns.forEach(function(column) {
+                if (column.field === 'group_key' || column.field === 'block_key') {
+                   column.visible = false;
+                }
+            });
+            console.log('Dynamically Generated Field Names:', keys);
+            $(tableId).bootstrapTable({
+                data: data,
+                columns: columns,
+                uniqueId: 'id',
+            });
       }
 
+    }
 
+    $(document).ready(function() {
 
+      <!-- var read input_data, loinc-data -->
+      var input_data = {{input_data|safe}};
+      var loinc_data = {{loinc_data|safe}};
+
+      prepareTable(input_data, '#UploadedTable');
+      prepareTable(loinc_data, '#LoincTable');
 
       var $FilterSelectedButton = $('#FilterSelectedButton');
       var $UploadedTable = $('#UploadedTable');
@@ -130,8 +158,10 @@
       $('#mapDataButton').click(function () {
         var selectedRows = $UploadedTable.bootstrapTable('getSelections');
         var selectedIds = selectedRows.map(row => row.id);
-        var UpdatedValue = 'Updated Value';
+
         for (var i = 0; i < selectedIds.length; i++) {
+            var row = $UploadedTable.bootstrapTable('getRowByUniqueId', selectedIds[i]);
+            var UpdatedValue = row.target_val;
           $UploadedTable.bootstrapTable('updateCellByUniqueId', {
             id: selectedIds[i],
             field: 'target_val',
