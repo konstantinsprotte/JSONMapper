@@ -64,6 +64,22 @@ html, body {
     background-color: #3d3d3d;
     color: #ffffff;
 }
+
+.dropdown-menu {
+  background-color: #3d3d3d; /* Change to desired menu background color */
+  color: #ffffff; /* Change to desired menu text color */
+}
+
+.dropdown-menu > li > a {
+  color: #ffffff; /* Change to desired menu item text color */
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+  background-color: #2d2d2d; /* Change to desired hover background color */
+  color: #ffffff; /* Change to desired hover text color */
+}
+
 .footer {
     position: fixed;
     left: 0;
@@ -73,4 +89,29 @@ html, body {
     color: #ffffff;
     text-align: right;
     padding: 10px;
+}
+
+#UploadedTable.table-hover > tbody > tr:hover > td,
+#UploadedTable.table-hover > tbody > tr:hover > th {
+  background-color: #3d3d3d !important; /* Change to desired hover background color */
+  color: #ffffff !important; /* Change to desired hover text color */
+}
+
+#LoincTable.table-hover > tbody > tr:hover > td,
+#LoincTable.table-hover > tbody > tr:hover > th {
+  background-color: #3d3d3d !important; /* Change to desired hover background color */
+  color: #ffffff !important; /* Change to desired hover text color */
+}
+
+#FilterSelectedButton_input, #FilterSelectedButton_loinc {
+  background-color: #3d3d3d; /* Change to desired button background color */
+  color: #ffffff; /* Change to desired button text color */
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
 }
