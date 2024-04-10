@@ -11,6 +11,9 @@ Required libraries:
 
 ## Usage
 
+Provided in the project directory is a script to convert terminology data from .csv to JSON.
+
+
 Put the dictionary file in the project folder "terminology" and the file to edit in the project folder "source".
 
 ## Troubleshooting
