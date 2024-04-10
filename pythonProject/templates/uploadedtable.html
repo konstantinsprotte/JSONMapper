@@ -131,11 +131,11 @@
     $(document).ready(function() {
 
       <!-- var read input_data, loinc-data -->
-      var input_data = {{input_data|safe}};
-      var loinc_data = {{loinc_data|safe}};
+      var source_data = {{source_data|safe}};
+      var terminology_data = {{terminology_data|safe}};
 
-      prepareTable(input_data, '#UploadedTable');
-      prepareTable(loinc_data, '#LoincTable');
+      prepareTable(source_data, '#UploadedTable');
+      prepareTable(terminology_data, '#LoincTable');
 
       var $FilterSelectedButton = $('#FilterSelectedButton');
       var $UploadedTable = $('#UploadedTable');
@@ -230,6 +230,8 @@
     link.click();
     document.body.removeChild(link);
 });
+
+
 
 
     });

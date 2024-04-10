@@ -6,17 +6,6 @@ import json
 # create a Flask app
 app = Flask(__name__)
 
-# set of allowed file extensions
-ALLOWED_EXTENSIONS = {'json'}
-
-# check if uploaded file is an allowed file type
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-def get_upload_folder(file_path):
-    upload_folder = os.path.dirname(file_path)
-    return upload_folder
-
 def format_title(title):
     title = title.replace('_', ' ')
     title = title.title()
@@ -26,6 +15,7 @@ def format_title(title):
 #grouping each of the group key values (depth 1), the block key values (depth 2), the item key values (depth 3) and subkey values (depth 4)
 # later a column will be made for each of the keys of the flattened data that are the same
 def JSON_data_reader(uploaded_data):
+
     grouped_data = []
     temp_ID_index = 0
     #within each flattened entry of my create array, create a key : value_entry
@@ -62,70 +52,57 @@ def Loinc_JSON_data_reader(uploaded_data):
 
     return grouped_data
 
-
-#app.route for home.html and upload_file function
-@app.route('/', methods=['GET', 'POST'])
-
-#upload_file function will be called when the user submits the form on the home page
-def upload_file():
-    if request.method == 'POST':
-        # check if the post request has the file and error handling
-        if 'file' not in request.files:
-            flash('No file part has been uploaded', 'No_File')
-            return redirect(request.url)
-        # assign the file to the variable file
-        file = request.files['file']
-        # if user does not select file return an error message
-        if file.filename == '':
-            flash('No file has been selected yet', 'No_Selection')
-            return redirect(request.url)
-        # if the file is valid and allowed to be uploaded, save the file
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file_path = os.path.join(get_upload_folder(file.filename), file.filename)
-            app.config['UPLOAD_FOLDER'] = get_upload_folder(file_path)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('filter', name=filename))
-    # render the home.html page
-    return render_template('home.html', title='Upload new File')
-
-
 #app.route for uploadedtable.html and file reader
-@app.route('/filter/<name>')
-def filter(name):
-    # Get the Loinc input file path
-    input_file_path = os.path.join(app.config['UPLOAD_FOLDER'], name)
+@app.route('/')
+def filter():
 
-    # Read the content of the file
-    with open(input_file_path, 'r') as loinc_file:
-        uploaded_data = json.load(loinc_file)
+    #file reading
+    source_dir = 'source'
+    terminology_dir = 'terminology'
+
+    # file input error handling
+    if len(os.listdir(source_dir)) != 1 :
+        print("Directorie 'source' contains more than one file or no files.")
+    elif len(os.listdir(terminology_dir)) != 1 :
+        print("Directorie 'terminology' contains more than one file or no files.")
+
+    source_filename = os.listdir(source_dir)[0]
+    terminology_filename = os.listdir(terminology_dir)[0]
+
+    # Construct file paths using the filenames
+    source_path = os.path.join(source_dir, source_filename)
+    terminology_path = os.path.join(terminology_dir, terminology_filename)
+
+    # Read terminology file
+    with open(source_path, 'r') as source_file:
+        source_data = json.load(source_file)
         #DEBUGGING
-        for key, value in uploaded_data.items():
+        for key, value in source_data.items():
             print("uploaded_data:")
             print(key, value)
     #store in grouped_data
-    input_data_grouped = JSON_data_reader(uploaded_data)
+    grouped_source_data = JSON_data_reader(source_data)
     #DEBUGGING
     #display the grouped_data
     print("input_data_grouped:")
-    print(input_data_grouped)
+    print(grouped_source_data)
 
-    #read loinc file
-    with open(r'C:\Users\konst\Downloads\latest\JSONMapper\pythonProject\templates\blank.json', 'r') as loinc_file:
-        loinc_data = json.load(loinc_file)
+    # read source file
+    with open(terminology_path, 'r') as terminology_file:
+        terminology_data = json.load(terminology_file)
         #DEBUGGING
-        for key, value in loinc_data.items():
-            print("loinc_data:")
+        for key, value in terminology_data.items():
+            print("terminology_data:")
             print(key, value)
     #store in grouped_loinc_data
-    grouped_loinc_data = Loinc_JSON_data_reader(loinc_data)
+    grouped_terminology_data = Loinc_JSON_data_reader(terminology_data)
     #DEBUGGING
     #display the grouped_loinc_data
-    print("grouped_loinc_data:")
-    print(grouped_loinc_data)
+    print("grouped_terminology_data:")
+    print(grouped_terminology_data)
 
     #render the uploadedtable.html page json.dumps is used to convert the grouped_data to a string
-    return render_template('uploadedtable.html', title='Filter Result', input_data=json.dumps(input_data_grouped), loinc_data=json.dumps(grouped_loinc_data))
+    return render_template('uploadedtable.html', title='Filter Result', source_data=json.dumps(grouped_source_data), terminology_data=json.dumps(grouped_terminology_data))
 
 if __name__ == "__main__":
     app.run(debug=True)
