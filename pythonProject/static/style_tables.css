@@ -70,22 +70,14 @@ html, body {
   color: #ffffff !important; /* Change to desired menu text color */
 }
 
-.keep-open btn-group {
-
-}
-<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-label="Columns" title="Columns">
-            <i class="glyphicon glyphicon-th icon-th"></i>
-
-            <span class="caret"></span>
-            </button>
 
 .footer {
     position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
-    background-color: #121212;
-    color: #ffffff;
+    background-color: #121212; !important;
+    color: #ffffff; !important;
     text-align: right;
     padding: 10px;
 }
