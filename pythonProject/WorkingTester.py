@@ -93,12 +93,12 @@ def upload_file():
 #app.route for uploadedtable.html and file reader
 @app.route('/filter/<name>')
 def filter(name):
-    # Get the input file path
+    # Get the Loinc input file path
     input_file_path = os.path.join(app.config['UPLOAD_FOLDER'], name)
 
     # Read the content of the file
-    with open(input_file_path, 'r') as input_file:
-        uploaded_data = json.load(input_file)
+    with open(input_file_path, 'r') as loinc_file:
+        uploaded_data = json.load(loinc_file)
         #DEBUGGING
         for key, value in uploaded_data.items():
             print("uploaded_data:")
