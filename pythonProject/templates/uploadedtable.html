@@ -21,8 +21,8 @@
     </div>
     <br/>
     <div id="toolbar_input">
-        <button id="FilterSelectedButton_input" class="toggle-btn">Show Only Selected</button>
-        <button id="FilterMappedButton_input" class="toggle-btn">Show Already Mapped</button>
+        <button id="FilterSelectedButton_source" class="toggle-btn">Show Only Selected</button>
+        <button id="FilterMappedButton_source" class="toggle-btn">Show Already Mapped</button>
     </div>
     <table
       id="UploadedTable"
@@ -67,7 +67,7 @@
         </div>
         <br/>
         <div id="toolbar_loinc">
-            <button id="FilterSelectedButton_loinc" class="toggle-btn">Show Only Selected</button>
+            <button id="FilterSelectedButton_terminology" class="toggle-btn">Show Only Selected</button>
         </div>
         <table
         id="LoincTable"
@@ -141,38 +141,38 @@
       prepareTable(source_data, '#UploadedTable');
       prepareTable(terminology_data, '#LoincTable');
 
-      var $FilterSelectedButton = $('#FilterSelectedButton');
+      var $FilterSelectedButtonSource = $('#FilterSelectedButton_source');
+      var $FilterSelectedButtonTerminology = $('#FilterSelectedButton_terminology');
       var $UploadedTable = $('#UploadedTable');
-      var filterActive = false;
+      var $LoincTable = $('#LoincTable');
+      var filterActiveSource = false;
+      var filterActiveTerminology = false;
+
       var filterInput = false;
 
-
-      $('#FilterMappedButton_input').click(function() {
+      <!-- Show Already Mapped Button Input Table -->
+      $('#FilterMappedButton_source').click(function() {
         filterInput = !filterInput;
-
         if (filterInput) {
             var rowsWithInput = [];
-
             $UploadedTable.bootstrapTable('getData').forEach(function(row) {
                 if (row.target_val !== "") {
                     rowsWithInput.push(row.id);
                 }
             });
-
             $UploadedTable.bootstrapTable('filterBy', {
             id: rowsWithInput
             });
         } else {
-
             $UploadedTable.bootstrapTable('filterBy', {});
         }
       });
 
-      <!-- Show Only Selected Button -->
-      $FilterSelectedButton.click(function() {
-        filterActive = !filterActive;
+      <!-- Show Only Selected Button Source -->
+      $FilterSelectedButtonSource.click(function() {
+        filterActiveSource = !filterActiveSource;
 
-        if (filterActive) {
+        if (filterActiveSource) {
           var selectedRows = $UploadedTable.bootstrapTable('getSelections');
           var selectedIds = selectedRows.map(row => row.id);
           var NotSelectedIds = $UploadedTable.bootstrapTable('getData').map(row => row.id).filter(id => !selectedIds.includes(id));
@@ -186,6 +186,28 @@
           }
         } else {
             $UploadedTable.bootstrapTable('filterBy', {});
+        }
+      });
+
+
+      <!-- Show Only Selected Button Terminology-->
+      $FilterSelectedButtonTerminology.click(function() {
+        filterActiveTerminology = !filterActiveTerminology;
+
+        if (filterActiveTerminology) {
+          var selectedRows = $LoincTable.bootstrapTable('getSelections');
+          var selectedIds = selectedRows.map(row => row.id);
+          var NotSelectedIds = $LoincTable.bootstrapTable('getData').map(row => row.id).filter(id => !selectedIds.includes(id));
+          // alert(JSON.stringify(selectedIds));
+          var temp = [0];
+
+          if (selectedIds.length > 0) {
+            $LoincTable.bootstrapTable('filterBy', {
+            id: selectedIds
+            });
+          }
+        } else {
+            $LoincTable.bootstrapTable('filterBy', {});
         }
       });
 
