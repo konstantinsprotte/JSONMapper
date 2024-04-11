@@ -2,6 +2,7 @@ html, body {
     background-color: #2d2d2d;
     color: #2d2d2d;
 
+    overflow: hidden;
     margin: 0;
     padding: 0;
 }
@@ -13,6 +14,7 @@ html, body {
     grid-template-columns: 1fr auto 1fr;
     gap: 10px;
     padding: 10px;
+    padding-bottom: 50px;
     width: 100%;
     height: 100vh;
     background-color: #2d2d2d;
@@ -47,8 +49,8 @@ html, body {
 .LoincJSONcontainer {
     grid-area: loinc;
     margin-left: auto;
-    margin-right: auto;
-    box-sizing: content-box;
+    margin-right: 10px;
+    box-sizing: border-box;
     align-items: center;
     overflow-x: auto;
     height: 100%;
@@ -72,15 +74,13 @@ html, body {
   color: #ffffff !important; /* Change to desired menu text color */
 }
 
-
-.footer {
+.footer{
     position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
     background-color: #121212; !important;
     color: #ffffff; !important;
-    text-align: right;
     padding: 10px;
 }
 
