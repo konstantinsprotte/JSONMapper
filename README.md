@@ -6,7 +6,6 @@ A simple library to map JSON to a class and vice versa.
 Required libraries:
 - flask
 - os
-- werkzeug.utils
 - json
 
 ## Usage
