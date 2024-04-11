@@ -99,7 +99,7 @@ html, body {
   color: #ffffff !important; /* Change to desired hover text color */
 }
 
-#FilterSelectedButton_input, #FilterSelectedButton_loinc {
+#FilterSelectedButton_source, #FilterSelectedButton_terminology, #FilterMappedButton_source {
   background-color: #3d3d3d; /* Change to desired button background color */
   color: #ffffff; /* Change to desired button text color */
   border: none;
