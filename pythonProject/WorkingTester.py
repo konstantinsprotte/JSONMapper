@@ -1,6 +1,5 @@
 import os
-from flask import Flask, flash, request, redirect, url_for, render_template
-from werkzeug.utils import secure_filename
+from flask import Flask, render_template
 import json
 
 # create a Flask app
@@ -14,12 +13,12 @@ def format_title(title):
 #JSON_data_reader reads JSON files and iterativly goes through the key values and flattens the data (currently in the depth 4)
 #grouping each of the group key values (depth 1), the block key values (depth 2), the item key values (depth 3) and subkey values (depth 4)
 # later a column will be made for each of the keys of the flattened data that are the same
-def JSON_data_reader(uploaded_data):
+def source_JSON_data_reader(source_data):
 
     grouped_data = []
     temp_ID_index = 0
     #within each flattened entry of my create array, create a key : value_entry
-    for group_key, group_value in uploaded_data.items():
+    for group_key, group_value in source_data.items():
         for block_key, block_value in group_value.items():
             if not isinstance(block_value, dict):#if our block key is a dict then we continue, otherwise it ends here
                 continue
@@ -36,12 +35,12 @@ def JSON_data_reader(uploaded_data):
 
     return grouped_data
 
-#Loinc data reader
-def Loinc_JSON_data_reader(uploaded_data):
+#terminology data reader
+def terminology_JSON_data_reader(terminology_data):
     grouped_data = []
     temp_ID_index = 0
     # within each flattened entry of my create array, create a key : value_entry
-    for concept_id, concept_data in uploaded_data["concept_id"].items():
+    for concept_id, concept_data in terminology_data["concept_id"].items():
         # creating an ID for each entry
         entry = {"id": temp_ID_index, "concept_id": concept_id}
         temp_ID_index += 1
@@ -81,7 +80,8 @@ def filter():
             print("uploaded_data:")
             print(key, value)
     #store in grouped_data
-    grouped_source_data = JSON_data_reader(source_data)
+    grouped_source_data = source_JSON_data_reader(source_data)
+
     #DEBUGGING
     #display the grouped_data
     print("input_data_grouped:")
@@ -95,13 +95,14 @@ def filter():
             print("terminology_data:")
             print(key, value)
     #store in grouped_loinc_data
-    grouped_terminology_data = Loinc_JSON_data_reader(terminology_data)
+    grouped_terminology_data = terminology_JSON_data_reader(terminology_data)
+
     #DEBUGGING
     #display the grouped_loinc_data
     print("grouped_terminology_data:")
     print(grouped_terminology_data)
 
-    #render the uploadedtable.html page json.dumps is used to convert the grouped_data to a string
+    #render the uploadedtable.html page
     return render_template('uploadedtable.html', title='Filter Result', source_data=json.dumps(grouped_source_data), terminology_data=json.dumps(grouped_terminology_data))
 
 if __name__ == "__main__":

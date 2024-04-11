@@ -6,23 +6,24 @@
   <title>Bootstrap Table - Flask example </title>
 
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_tables.css') }}">
+  <!-- Stylesheets for the tables -->
   <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css">
-    <link rel="stylesheet" href="extensions/fixed-columns/bootstrap-table-fixed-columns.css">
+
 </head>
 
 <body>
 <!-- grid container -->
 <div class="GridContainer">
-    <!-- input table -->
+
+    <!-- source table -->
   <div class="UploadedJSONcontainer" style="padding: 10px">
     <div class="header-container text-center mb-5">
       <h1><strong>Mappable Table</strong></h1>
     </div>
     <br/>
     <div id="toolbar_input">
-        <button id="FilterSelectedButton_source" class="toggle-btn">Show Only Selected</button>
-        <button id="FilterMappedButton_source" class="toggle-btn">Show Already Mapped</button>
+      <button id="FilterSelectedButton_input" class="toggle-btn">Show Only Selected</button>
     </div>
     <table
       id="UploadedTable"
@@ -60,14 +61,14 @@
     </button>
   </div>
 
-<!-- loinc table -->
+<!-- terminology table -->
     <div class="LoincJSONcontainer" style="padding: 10px; width: 100%">
         <div class="header-container text-center mb-5">
         <h1><strong>LOINC Table</strong></h1>
         </div>
         <br/>
         <div id="toolbar_loinc">
-            <button id="FilterSelectedButton_terminology" class="toggle-btn">Show Only Selected</button>
+        <button id="FilterSelectedButton_loinc" class="toggle-btn">Show Only Selected</button>
         </div>
         <table
         id="LoincTable"
@@ -88,16 +89,16 @@
     <p>Erstellt von: Anton Burckhardt und Konstantin Sprotte</p>
 </div>
 
-<!-- JAVASCRIPT PART -->
+<!-- Scripts -->
   <script
     src="https://code.jquery.com/jquery-2.2.4.min.js"
     integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
     crossorigin="anonymous"></script>
   <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
   <script type='text/javascript' src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
-<script src="extensions/fixed-columns/bootstrap-table-fixed-columns.js"></script>
 <script type='text/javascript'>
 
+    <!-- format title -->
     function formatTitle(title) {
       return title.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
         return char.toUpperCase();
@@ -126,53 +127,27 @@
                 data: data,
                 columns: columns,
                 uniqueId: 'id',
-                fixedColumns: true,
-                fixedNumber: 1
             });
       }
      }
 
     $(document).ready(function() {
 
-      <!-- var read input_data, loinc-data -->
+      <!-- var read source_data, terminology_data -->
       var source_data = {{source_data|safe}};
       var terminology_data = {{terminology_data|safe}};
 
       prepareTable(source_data, '#UploadedTable');
       prepareTable(terminology_data, '#LoincTable');
 
-      var $FilterSelectedButtonSource = $('#FilterSelectedButton_source');
-      var $FilterSelectedButtonTerminology = $('#FilterSelectedButton_terminology');
+      var $FilterSelectedButton = $('#FilterSelectedButton');
       var $UploadedTable = $('#UploadedTable');
-      var $LoincTable = $('#LoincTable');
-      var filterActiveSource = false;
-      var filterActiveTerminology = false;
+      var filterActive = false;
 
-      var filterInput = false;
+      $FilterSelectedButton.click(function() {
+        filterActive = !filterActive;
 
-      <!-- Show Already Mapped Button Input Table -->
-      $('#FilterMappedButton_source').click(function() {
-        filterInput = !filterInput;
-        if (filterInput) {
-            var rowsWithInput = [];
-            $UploadedTable.bootstrapTable('getData').forEach(function(row) {
-                if (row.target_val !== "") {
-                    rowsWithInput.push(row.id);
-                }
-            });
-            $UploadedTable.bootstrapTable('filterBy', {
-            id: rowsWithInput
-            });
-        } else {
-            $UploadedTable.bootstrapTable('filterBy', {});
-        }
-      });
-
-      <!-- Show Only Selected Button Source -->
-      $FilterSelectedButtonSource.click(function() {
-        filterActiveSource = !filterActiveSource;
-
-        if (filterActiveSource) {
+        if (filterActive) {
           var selectedRows = $UploadedTable.bootstrapTable('getSelections');
           var selectedIds = selectedRows.map(row => row.id);
           var NotSelectedIds = $UploadedTable.bootstrapTable('getData').map(row => row.id).filter(id => !selectedIds.includes(id));
@@ -189,31 +164,8 @@
         }
       });
 
-
-      <!-- Show Only Selected Button Terminology-->
-      $FilterSelectedButtonTerminology.click(function() {
-        filterActiveTerminology = !filterActiveTerminology;
-
-        if (filterActiveTerminology) {
-          var selectedRows = $LoincTable.bootstrapTable('getSelections');
-          var selectedIds = selectedRows.map(row => row.id);
-          var NotSelectedIds = $LoincTable.bootstrapTable('getData').map(row => row.id).filter(id => !selectedIds.includes(id));
-          // alert(JSON.stringify(selectedIds));
-          var temp = [0];
-
-          if (selectedIds.length > 0) {
-            $LoincTable.bootstrapTable('filterBy', {
-            id: selectedIds
-            });
-          }
-        } else {
-            $LoincTable.bootstrapTable('filterBy', {});
-        }
-      });
-
       var MappedDataRows = [];
 
-    <!-- Map Data Button -->
     $('#mapDataButton').click(function () {
     var selectedRowsLeft = $UploadedTable.bootstrapTable('getSelections');
     var selectedIdsLeft = selectedRowsLeft.map(row => row.id);
@@ -238,7 +190,7 @@
         }
     }
 });
-      <!-- Undo Button -->
+
       $('#undoMapDataButton').click(function () {
         var selectedRows = $UploadedTable.bootstrapTable('getSelections');
         var selectedIds = selectedRows.map(row => row.id);
@@ -252,7 +204,6 @@
         }
       });
 
-      <!-- Export Button -->
       $('#exportButton').click(function () {
     var data = $UploadedTable.bootstrapTable('getData');
     var transformedData = data.reduce((acc, item) => {
