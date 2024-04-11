@@ -8,7 +8,7 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_tables.css') }}">
   <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css">
-
+    <link rel="stylesheet" href="extensions/fixed-columns/bootstrap-table-fixed-columns.css">
 </head>
 
 <body>
@@ -21,7 +21,8 @@
     </div>
     <br/>
     <div id="toolbar_input">
-      <button id="FilterSelectedButton_input" class="toggle-btn">Show Only Selected</button>
+        <button id="FilterSelectedButton_input" class="toggle-btn">Show Only Selected</button>
+        <button id="FilterMappedButton_input" class="toggle-btn">Show Already Mapped</button>
     </div>
     <table
       id="UploadedTable"
@@ -66,7 +67,7 @@
         </div>
         <br/>
         <div id="toolbar_loinc">
-        <button id="FilterSelectedButton_loinc" class="toggle-btn">Show Only Selected</button>
+            <button id="FilterSelectedButton_loinc" class="toggle-btn">Show Only Selected</button>
         </div>
         <table
         id="LoincTable"
@@ -94,6 +95,7 @@
     crossorigin="anonymous"></script>
   <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
   <script type='text/javascript' src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
+<script src="extensions/fixed-columns/bootstrap-table-fixed-columns.js"></script>
 <script type='text/javascript'>
 
     function formatTitle(title) {
@@ -124,6 +126,8 @@
                 data: data,
                 columns: columns,
                 uniqueId: 'id',
+                fixedColumns: true,
+                fixedNumber: 1
             });
       }
      }
@@ -140,8 +144,31 @@
       var $FilterSelectedButton = $('#FilterSelectedButton');
       var $UploadedTable = $('#UploadedTable');
       var filterActive = false;
+      var filterInput = false;
 
 
+      $('#FilterMappedButton_input').click(function() {
+        filterInput = !filterInput;
+
+        if (filterInput) {
+            var rowsWithInput = [];
+
+            $UploadedTable.bootstrapTable('getData').forEach(function(row) {
+                if (row.target_val !== "") {
+                    rowsWithInput.push(row.id);
+                }
+            });
+
+            $UploadedTable.bootstrapTable('filterBy', {
+            id: rowsWithInput
+            });
+        } else {
+
+            $UploadedTable.bootstrapTable('filterBy', {});
+        }
+      });
+
+      <!-- Show Only Selected Button -->
       $FilterSelectedButton.click(function() {
         filterActive = !filterActive;
 
@@ -164,6 +191,7 @@
 
       var MappedDataRows = [];
 
+    <!-- Map Data Button -->
     $('#mapDataButton').click(function () {
     var selectedRowsLeft = $UploadedTable.bootstrapTable('getSelections');
     var selectedIdsLeft = selectedRowsLeft.map(row => row.id);
@@ -188,7 +216,7 @@
         }
     }
 });
-
+      <!-- Undo Button -->
       $('#undoMapDataButton').click(function () {
         var selectedRows = $UploadedTable.bootstrapTable('getSelections');
         var selectedIds = selectedRows.map(row => row.id);
@@ -202,6 +230,7 @@
         }
       });
 
+      <!-- Export Button -->
       $('#exportButton').click(function () {
     var data = $UploadedTable.bootstrapTable('getData');
     var transformedData = data.reduce((acc, item) => {
