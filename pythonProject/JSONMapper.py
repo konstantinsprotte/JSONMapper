@@ -59,11 +59,12 @@ def filter():
     source_dir = 'source'
     terminology_dir = 'terminology'
 
-    # file input error handling
+    # file input error handling. returns template without tables if there are no files in the directories
     if len(os.listdir(source_dir)) != 1 :
-        print("Directorie 'source' contains more than one file or no files.")
+        return render_template('uploadedtable.html', title='Filter Result')
+
     elif len(os.listdir(terminology_dir)) != 1 :
-        print("Directorie 'terminology' contains more than one file or no files.")
+        return render_template('uploadedtable.html', title='Filter Result')
 
     source_filename = os.listdir(source_dir)[0]
     terminology_filename = os.listdir(terminology_dir)[0]
@@ -73,6 +74,7 @@ def filter():
     terminology_path = os.path.join(terminology_dir, terminology_filename)
 
     # Read terminology file
+
     with open(source_path, 'r') as source_file:
         source_data = json.load(source_file)
         #DEBUGGING
