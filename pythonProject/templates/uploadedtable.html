@@ -131,7 +131,7 @@
                     checkbox: true,
                 },
                 ...keys.map(function(key) {
-                    return { field: key, title: formatTitle(key) };
+                    return { field: key, title: formatTitle(key), visible: key !== 'id' };
                 })
             ];
             columns.forEach(function(column) {
