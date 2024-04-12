@@ -36,3 +36,7 @@ On startup print statements display the read data on the console. Check if the d
 ## License
 
 JSONMapper © 2024 by Anton Burckhardt and Konstantin Sprotte is licensed under CC BY-NC-SA 4.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+## Contact
+E-Mail: konstantinsprotte@gmail.com
+Github: https://github.com/konstantinsprotte
