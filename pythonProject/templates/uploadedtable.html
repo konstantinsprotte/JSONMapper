@@ -230,10 +230,16 @@
       var MappedDataRows = [];
 
     $('#mapDataButton').click(function () {
+    var selectedRowsRight = $('#LoincTable').bootstrapTable('getSelections');
+
+    if (selectedRowsRight.length > 1) {
+        alert('Error: Only one terminology id can be selected.');
+        return;
+    }
+
     var selectedRowsLeft = $UploadedTable.bootstrapTable('getSelections');
     var selectedIdsLeft = selectedRowsLeft.map(row => row.id);
 
-    var selectedRowsRight = $('#LoincTable').bootstrapTable('getSelections');
     var selectedIdRight = selectedRowsRight[0].id; // Get the first selected row from the right table
 
     var rowRight = $('#LoincTable').bootstrapTable('getRowByUniqueId', selectedIdRight);
