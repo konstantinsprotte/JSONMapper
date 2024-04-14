@@ -1,7 +1,11 @@
 # JSONMapper
-A simple library to map JSON to a class and vice versa.
+A simple library to easily and visually map JSON data from a Terminology file to a Source File.
+
+Place the file on which data will be mapped in the Source Folder and the file to be mapped from in the Terminology Folder.
 
 ## Installation
+Execute the setup file for either Mac/Linux or Windows to make sure the required libraries are downloaded and to gain access to the Terminology and Source Folders.
+
 Executing the setup.sh file for Mac/Linux:
 1. Navigate to your Command Prompt Terminal
 2. Make sure you are in the project directory JSONMapper [cd /path/to/the/project/directory]
