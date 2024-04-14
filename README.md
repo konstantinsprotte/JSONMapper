@@ -16,7 +16,7 @@ Provided in the project directory is a script (converter.py) to convert terminol
 Put the dictionary file in the project folder "terminology" and the file to edit in the project folder "source". Run JSONMapper.py and open the WebApp in your browser (http://127.0.0.1:5000/).
 
 ### Mapping
-Checkboxes at the start of each row can be used to select the rows to be mapped. Only one terminology code can be mapped to many source codes. To map click the button "Map Data". The value "Target Val" of the source table on the left will be updated after. The button "Undo" drops the last mapping. To exit and save hit "Export". A dialog will open to save the source file with the updated Target Val.
+Checkboxes at the start of each row can be used to select the rows to be mapped. Only one terminology code can be mapped to many source codes. To map click the button "Map Data". The value "Target Val" of the source table on the left will be updated after. The button "Undo" can remove any mapped input in "Target Val" of the source table. To exit and save hit "Export". A dialog will open to save the source file with the updated Target Val.
 
 ### Table filtering
 Columns: You can select which columns to display by using the dropdown menu above each table.
