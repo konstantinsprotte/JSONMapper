@@ -24,7 +24,7 @@
     <br/>
     <div id="toolbar_input">
       <button id="FilterSelectedButton_source" class="toggle-btn">Show only selected</button>
-        <button id="FilterMappedButton_source" class="toggle-btn">Show already mapped</button>
+        <button id="FilterMappedButton_source" class="toggle-btn">Show only mapped</button>
     </div>
     <table
       id="UploadedTable"
@@ -179,8 +179,12 @@
             $UploadedTable.bootstrapTable('filterBy', {
             id: rowsWithInput
             });
+
+            $(this).text('Show all');
         } else {
             $UploadedTable.bootstrapTable('filterBy', {});
+
+            $(this).text('Show only mapped');
         }
       });
 
