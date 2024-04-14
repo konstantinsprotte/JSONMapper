@@ -2,6 +2,16 @@
 A simple library to map JSON to a class and vice versa.
 
 ## Installation
+Executing the setup.sh file for Mac/Linux:
+1. Navigate to your Command Prompt Terminal
+2. Make sure you are in the project directory JSONMapper [cd /path/to/the/project/directory]
+3. Make sure the setup file has executable permissions, you can make it executable by running [ chmod +x setup.sh ] within the directory
+4. Execute the setup.sh script by running [ ./setup.sh ]
+
+Executing the setup.bat file for Windows
+1. Navigate to your Command Prompt Terminal
+2. Make sure you are in the project directory JSONMapper [cd /path/to/the/project/directory]
+3. Execute the setup.bat script by running [ ./setup.bat ]
 
 Required libraries:
 - flask
