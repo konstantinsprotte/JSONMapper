@@ -5,11 +5,6 @@ import json
 # create a Flask app
 app = Flask(__name__)
 
-def format_title(title):
-    title = title.replace('_', ' ')
-    title = title.title()
-    return title
-
 #JSON_data_reader reads JSON files and iterativly goes through the key values and flattens the data (currently in the depth 4)
 #grouping each of the group key values (depth 1), the block key values (depth 2), the item key values (depth 3) and subkey values (depth 4)
 # later a column will be made for each of the keys of the flattened data that are the same

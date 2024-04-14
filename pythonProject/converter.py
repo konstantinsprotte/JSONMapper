@@ -27,7 +27,7 @@ def csv_to_json(csv_file, json_file, encoding='utf-8'):
         json.dump(wrapped_data, json_output, indent=4)
 
 # INSERT FILEPATHS HERE
-csv_file_path = r'C:\'
-json_file_path = r'C:\'
+csv_file_path = r'C:\pastefilepathtocsv'
+json_file_path = r'C:\pastefilepathtojson'
 
 csv_to_json(csv_file_path, json_file_path)
